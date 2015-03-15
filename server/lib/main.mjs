@@ -30,7 +30,10 @@ var handle-client-message = (ws, msg) -> do!
     clients[client-id] = ws
   else if (clients[client-id] != ws)
     console.log ('Client reconnected: ' + client-id)
-    clients[client-id].close()
+    try
+      clients[client-id].close()
+    catch (var e)
+      console.log ('Error closing old ws for client ' + client-id)
     clients[client-id] = ws
   var thing-id = msg['thing-id']
   if (thing-id != undefined)
@@ -47,6 +50,13 @@ var handle-thing-message = (ws, msg) -> do!
     return
   if (things[thing-id] == undefined)
     console.log ('Thing connected: ' + thing-id)
+    things[thing-id] = ws
+  else if (things[thing-id] != ws)
+    console.log ('Thing reconnected: ' + thing-id)
+    try
+      things[thing-id].close()
+    catch (var e)
+      console.log ('Error closing old ws for thing ' + thing-id)
     things[thing-id] = ws
   Object.keys(clients).for-each #->
     send-message (clients[#it], msg)

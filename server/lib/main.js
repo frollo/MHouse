@@ -29,7 +29,7 @@ _$0: {
         return _$3;
     };
     handleClientMessage = function (ws, msg) {
-        var clientId, thingId, thing, _$3, _$4, _$5, _$6, _$7;
+        var clientId, e, thingId, thing, _$3, _$4, _$5, _$6, _$7;
         _$4: {
             clientId = msg['client-id'];
             if (clients[clientId] === undefined) {
@@ -41,7 +41,11 @@ _$0: {
                 if (clients[clientId] !== ws) {
                     _$6: {
                         console.log('Client reconnected: ' + clientId);
-                        clients[clientId].close();
+                        try {
+                            clients[clientId].close();
+                        } catch (e) {
+                            console.log('Error closing old ws for client ' + clientId);
+                        }
                         clients[clientId] = ws;
                     }
                 }
@@ -63,7 +67,7 @@ _$0: {
         return _$3;
     };
     handleThingMessage = function (ws, msg) {
-        var thingId, _$3, _$4, _$5, _$6;
+        var thingId, e, _$3, _$4, _$5, _$6, _$7;
         _$4: {
             thingId = msg['thing-id'];
             if (thingId === undefined) {
@@ -76,6 +80,18 @@ _$0: {
                 _$6: {
                     console.log('Thing connected: ' + thingId);
                     things[thingId] = ws;
+                }
+            } else {
+                if (things[thingId] !== ws) {
+                    _$7: {
+                        console.log('Thing reconnected: ' + thingId);
+                        try {
+                            things[thingId].close();
+                        } catch (e) {
+                            console.log('Error closing old ws for thing ' + thingId);
+                        }
+                        things[thingId] = ws;
+                    }
                 }
             }
             Object.keys(clients).forEach(function (__$arg$1) {
