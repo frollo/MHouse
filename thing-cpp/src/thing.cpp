@@ -87,7 +87,7 @@ void *hamelin_thread(void *message_handler){
 /*
  * The specific thread for the Thing
  */
-void *specific_thread(void){
+void *specific_thread(void *something){
 	while(true){} //Replace with generic implementation
 }
 
@@ -95,6 +95,7 @@ int main(char *steward){
 	using easywsclient::WebSocket;
 	pthread_t threads[2];
 	int rc;
+	void *sp_thread_args;
 
 	//Connection setup
 	WebSocket::pointer ws = WebSocket::from_url(steward);
@@ -109,7 +110,7 @@ int main(char *steward){
 	}
 
 	//Specific thread setup
-	rc = pthread_create(&threads[1], NULL, specific_thread, NULL);
+	rc = pthread_create(&threads[1], NULL, specific_thread, sp_thread_args);
 		if(rc != 0){
 			fprintf(stderr, "%s-server: pthread %d\n", type, rc);
 			pthread_cancel(threads[0]); //Kill the Hamelin thread
