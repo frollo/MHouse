@@ -1,0 +1,24 @@
+{
+  "name": "mhouse-server",
+  "version": "0.0.1",
+  "description": "MHouse cloud server",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^2.1.1",
+    "gulp": "^3.8.11",
+    "gulp-mjs-conventions": "0.0.4",
+    "meta-script": "0.0.45",
+    "mocha": "^2.2.1"
+  },
+  "dependencies": {
+    "express": "^4.12.2",
+    "express-ws": "^0.2.5",
+    "underarm": "^0.6.1",
+    "ws": "^0.7.1"
+  }
+}
