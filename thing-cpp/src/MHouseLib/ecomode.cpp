@@ -76,8 +76,7 @@ void lightCheck(int lux, upm::GroveLight* light, upm::Jhd1313m1* lcd,upm::GroveL
  * - blink the led to show the temperature was measured and data updated
  */
 
-void eco_thread(void)
-{
+void eco_thread(void){
 	// check that we are running on Galileo or Edison
 	mraa_platform_t platform = mraa_get_platform_type();
 	if ((platform != MRAA_INTEL_GALILEO_GEN1) &&
@@ -85,7 +84,7 @@ void eco_thread(void)
 			(platform != MRAA_INTEL_EDISON_FAB_C)) {
 		std::cerr << "Unsupported platform, exiting" << std::endl;
 		//return MRAA_ERROR_INVALID_PLATFORM;
-		exit;
+		exit (MRAA_ERROR_INVALID_PLATFORM);
 	}
 	upm::Jhd1313m1* lcd = new upm::Jhd1313m1(0);
 	upm::GroveLight* light = new upm::GroveLight(1);
