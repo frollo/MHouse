@@ -5,20 +5,16 @@
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
-int main(int argc, char**argv)
-{
+
+int print_to_LCD(char *stringa1, char *stringa2){
  // check that we are running on Galileo or Edison
- char *stringa1 =argv[1];
- char *stringa2 =argv[2];
-
-
 
  mraa_platform_t platform = mraa_get_platform_type();
  if ((platform != MRAA_INTEL_GALILEO_GEN1) &&
 		 (platform != MRAA_INTEL_GALILEO_GEN2) &&
 		 (platform != MRAA_INTEL_EDISON_FAB_C)) {
 	 	 std::cerr << "Unsupported platform, exiting" << std::endl;
- return MRAA_ERROR_INVALID_PLATFORM;
+	 	 return MRAA_ERROR_INVALID_PLATFORM;
  }
  upm::Jhd1313m1* lcd = new upm::Jhd1313m1(0);
  	 char *app1,*app2;

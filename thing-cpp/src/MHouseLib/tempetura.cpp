@@ -22,17 +22,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "grove.h"
-#include "jhd1313m1.h"
-
-#include <climits>
-#include <iostream>
-#include <sstream>
-#include <unistd.h>
+#include "MHouseLib.h"
 
 
 
-int main()
+int temperature()
 {
 	// check that we are running on Galileo or Edison
 	mraa_platform_t platform = mraa_get_platform_type();
