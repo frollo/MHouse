@@ -30,6 +30,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <assert.h>
+#include <pthread.h>
 
 #include "easywsclient.hpp"
 /*
@@ -58,6 +59,7 @@
 
 using easywsclient::WebSocket;
 static WebSocket::pointer ws = NULL;
+static const char *type = "THING";
 
 void handle_message(const std::string & message){
 	printf(">>> %s\n", message.c_str());
@@ -66,16 +68,55 @@ void handle_message(const std::string & message){
 	//}
 }
 
-int main(void){
-	using easywsclient::WebSocket;
-	WebSocket::pointer ws = WebSocket::from_url("ws://10.2.1.58:8888/manage");
-	assert(ws);
+
+/*
+ * The Hamelin thread, which takes care of listening to the
+ * steward server
+ *
+ */
+void *hamelin_thread(void *message_handler){
 	while (true) {
-		ws->poll();
-	    ws->send("hello");
-	    ws->dispatch(handle_message);
-	    // ...do more stuff...
+			ws->poll();
+		    ws->send("hello");
+		    ws->dispatch(message_handler);
+		    // ...do more stuff...
+		}
+}
+
+
+/*
+ * The specific thread for the Thing
+ */
+void *specific_thread(void){
+	while(true){} //Replace with generic implementation
+}
+
+int main(char *steward){
+	using easywsclient::WebSocket;
+	pthread_t threads[2];
+	int rc;
+
+	//Connection setup
+	WebSocket::pointer ws = WebSocket::from_url(steward);
+	assert(ws);
+
+	//Hamelin thread setup
+	rc = pthread_create(&threads[0], NULL, hamelin_thread, handle_message);
+	if(rc != 0){
+		fprintf(stderr, "%s-server: pthread %d\n", type, rc);
+		delete ws;
+		for(;;){} //loop
 	}
+
+	//Specific thread setup
+	rc = pthread_create(&threads[1], NULL, specific_thread, NULL);
+		if(rc != 0){
+			fprintf(stderr, "%s-server: pthread %d\n", type, rc);
+			pthread_cancel(threads[0]); //Kill the Hamelin thread
+			delete ws;
+			for(;;){} //loop
+		}
+
 	delete ws; // alternatively, use unique_ptr<> if you have C++11
 	return 0;
 }
